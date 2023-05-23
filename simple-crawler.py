@@ -57,21 +57,24 @@ if __name__ == '__main__':
     docto_data_json = []
     # Range is 77 because we know that there are between 7600 and 7700 links
     # number was checked manually
-    #for i in range(77):
-    #    links = main_surfing(i * 100, links)
-    #    print('Page ' + str(i + 1) + ' done')
+    for i in range(77):
+        links = main_surfing(i * 100, links)
+        print('Page ' + str(i + 1) + ' done')
+
+    # remove duplicates from links
+    links = list(dict.fromkeys(links))
+
 
     # This save the links in a json file
     # Only for backup
-    #with open('links.json', 'w') as outfile:
-    #    json.dump(links, outfile)
+    with open('links.json', 'w') as outfile:
+        json.dump(links, outfile)
     
     #load links from json file
-    with open('links.json') as json_file:
-        links = json.load(json_file)
+    #with open('links.json') as json_file:
+    #    links = json.load(json_file)
 
     # This get the data of each document
-    flag = False
     for link in links:
         print('Document ' + link + ' started')
         docto_data_json.append(document_web(link))
@@ -82,11 +85,16 @@ if __name__ == '__main__':
     with open('doctos_data.json', 'w') as outfile:
         json.dump(docto_data_json, outfile)
     
+    #load doctos_data from json file
+    #with open('doctos_data.json') as json_file:
+    #    docto_data_json = json.load(json_file)
+
     for docto in docto_data_json:
-        download_link = docto['citation_pdf_url'][0]
-        filename = docto['id']
-        get_file(download_link, filename)
-        print('File ' + filename + ' done')
+        if len(docto['DC.title']) > 0:
+            download_link = docto['citation_pdf_url'][0]
+            filename = docto['id']
+            get_file(download_link, filename)
+            print('File ' + filename + ' done')
 
     
 
